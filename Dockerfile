@@ -4,8 +4,9 @@ RUN apk add --update curl bash jq bc \
     && rm -rf /var/cache/apk/*
 
 RUN cd /usr/local/bin \
-    && curl -O https://storage.googleapis.com/kubernetes-release/release/v1.6.2/bin/linux/amd64/kubectl \
-    && chmod 755 /usr/local/bin/kubectl
+    && curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl \
+    && chmod +x ./kubectl \
+    && mv ./kubectl /usr/local/bin/kubectl
 
 COPY autoscale.sh /bin/autoscale.sh
 RUN chmod +x /bin/autoscale.sh
