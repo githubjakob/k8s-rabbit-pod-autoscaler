@@ -58,6 +58,8 @@ spec:
             value: "30"
           - name: RABBIT_HOST
             value: "http://rabbitmq.example.com"
+          - name: RABBIT_PORT
+            value: 15672
           - name: RABBIT_USER
             valueFrom:
               secretKeyRef:
@@ -70,8 +72,8 @@ spec:
                 key: rabbit-pass
           - name: AUTOSCALING
             value: >
-              3|10|5|development|example|%2f|15672|example.queue;
-              3|5|3|development|example2|%2f|15672|example2.queue
+              3|10|5|development|example|example.queue;
+              3|5|3|development|example2|example2.queue
           - name: LOGS
             value: HIGH
           - name: SLACK_HOOK

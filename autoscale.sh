@@ -38,11 +38,11 @@ IFS=';' read -ra autoscalingArr <<< "$autoscalingNoWS"
 while true; do
   for autoscaler in "${autoscalingArr[@]}"; do
 
-    IFS='|' read minPods maxPods mesgPerPod namespace deployment vhostName port queueName <<< "$autoscaler"
-    echo "$(date) -- Querying queue $RABBIT_HOST:$port/api/queues/$vhostName/$queueName"
+    IFS='|' read minPods maxPods mesgPerPod namespace deployment queueName <<< "$autoscaler"
+    echo "$(date) -- Querying queue $RABBIT_HOST:$RABBIT_PORT/api/queues/$RABBIT_USER/$queueName"
 
     queueMessagesJson=$(curl -s -S --retry 3 --retry-delay 3 -u $RABBIT_USER:$RABBIT_PASS \
-      $RABBIT_HOST:$port/api/queues/$vhostName/$queueName)
+      $RABBIT_HOST:$port/api/queues/$RABBIT_USER/$queueName)
 
     if [[ $? -eq 0 ]]; then
       queueMessages=$(echo $queueMessagesJson | jq '.messages')
