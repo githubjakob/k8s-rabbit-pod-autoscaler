@@ -39,16 +39,13 @@ while true; do
   for autoscaler in "${autoscalingArr[@]}"; do
 
     IFS='|' read minPods maxPods mesgPerPod namespace deployment queueName <<< "$autoscaler"
-    echo "$(date) -- Querying queue $RABBIT_HOST:$RABBIT_PORT/api/queues/$RABBIT_USER/$queueName"
 
     queueMessagesJson=$(curl -s -S --retry 3 --retry-delay 3 -u $RABBIT_USER:$RABBIT_PASS \
       $RABBIT_HOST:$port/api/queues/$RABBIT_USER/$queueName)
 
     if [[ $? -eq 0 ]]; then
       queueMessages=$(echo $queueMessagesJson | jq '.messages')
-      echo "$(date) -- QueueMessages: $queueMessages"
       requiredPods=$(echo "$queueMessages/$mesgPerPod" | bc 2> /dev/null)
-      echo "$(date) -- RequiredPods: $requiredPods"
 
       if [[ $requiredPods != "" ]]; then
         currentPods=$(getCurrentPods)
@@ -98,7 +95,7 @@ while true; do
                   log=true
                 fi
 
-                if $log ; then 
+                if $log ; then
                   echo "$(date) -- Scaled $deployment to $desiredPods pods ($queueMessages msg in RabbitMQ)"
                   notifySlack "Scaled $deployment to $desiredPods pods ($queueMessages msg in RabbitMQ)"
                 fi
